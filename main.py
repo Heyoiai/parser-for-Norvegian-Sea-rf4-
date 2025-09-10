@@ -5,6 +5,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from itertools import islice
+
 
 def all_parsing() -> {str: {str:list}}:
     with webdriver.Chrome() as browser:
@@ -27,17 +29,33 @@ def all_parsing() -> {str: {str:list}}:
                 for j in i.find_elements(By.CLASS_NAME, 'bait_icon'):
                     temp_bait.append(j.get_attribute('title'))
                 result_dict.setdefault(location, {}).setdefault(fish, temp_bait)
-
-                    #print(j.get_attribute('title'))
-                #start_value += 1
             except:
                 continue
-                #print(i.find_element(By.CLASS_NAME, 'bait_icon').get_attribute('title'))
         return result_dict
+    
+random_fish = ['Акула гигантская', 'Акула гренландская полярная',
+               'Акула плащеносная', 'Акула сельдевая атлантическая',
+               'Берикс красный', 'Гимантолоф атлантический', 'Горбыль серебристый',
+               'Зубатка синяя', 'Кальмар обыкновенный', 'Конгер', 'Краб камчатский',
+               'Меч-рыба', 'Мольва голубая', 'Мольва обыкновенная', 'Морской чёрт',
+               'Окунь каменный', 'Окунь морской золотистый', 'Окунь морской норвежский',
+               'Окунь-клювач', 'Опах краснопёрый', 'Палтус атлантический', 'Палтус синекорый',
+               'Тунец голубой', 'Центролоф чёрный']
+small_fish = ['Бельдюга европейская', 'Макрель атлантическая', 'Путассу северная',
+              'Сайра атлантическая', 'Сардина европейская', 'Сельдь атлантическая']
+
+def baits_for_random_fish(result_dict):
+    temp_dict = {}
+    for k, v in result_dict['Норвежское море'].items():
+        if k in random_fish:
+            for i in v:
+                temp_dict[i] = temp_dict.get(i, 0) + 1
+    return list(islice(dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)).items(), 5))
+
 
 if __name__ == "__main__":
-    # Вызов функции
-    print(all_parsing())
+    result_dict = all_parsing()
+    print(*baits_for_random_fish(result_dict))
 
 
 
