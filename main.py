@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from itertools import islice
+import json
 
 
 def all_parsing() -> {str: {str:list}}:
@@ -21,9 +22,7 @@ def all_parsing() -> {str: {str:list}}:
             if i.get_attribute('class') == 'row header':
                 start_value += 1
             try:
-                #print(i.find_element(By.CSS_SELECTOR, f'div.row:nth-child({start_value}) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)').text)
                 location = i.find_element(By.CSS_SELECTOR, f'div.row:nth-child({start_value}) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3)').text
-                #print(i.find_element(By.CLASS_NAME, 'text').text)
                 fish = i.find_element(By.CLASS_NAME, 'text').text
                 temp_bait = []
                 for j in i.find_elements(By.CLASS_NAME, 'bait_icon'):
@@ -32,7 +31,14 @@ def all_parsing() -> {str: {str:list}}:
             except:
                 continue
         return result_dict
-    
+
+def save_all_parsing_in_json(result_dict, file_name='all_parsing_result.json'):   #сохранить результаты всего парсинга в json файл
+    with open(file_name, 'w', encoding='utf-8') as f:
+        json.dump(result_dict, f, ensure_ascii=False, indent=2)
+def load_parsing_results(filename): #вывод из json формата в питон формат
+    with open(filename, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
 random_fish = ['Акула гигантская', 'Акула гренландская полярная',
                'Акула плащеносная', 'Акула сельдевая атлантическая',
                'Берикс красный', 'Гимантолоф атлантический', 'Горбыль серебристый',
@@ -43,6 +49,10 @@ random_fish = ['Акула гигантская', 'Акула гренландс
                'Тунец голубой', 'Центролоф чёрный']
 small_fish = ['Бельдюга европейская', 'Макрель атлантическая', 'Путассу северная',
               'Сайра атлантическая', 'Сардина европейская', 'Сельдь атлантическая']
+other_fish = ['Бельдюга европейская', 'Гребешок исландский', 'Камбала морская',
+              'Камбала палтусовидная', 'Камбала хоботная', 'Катран', 'Керчак европейский',
+              'Краб съедобный', 'Менёк', 'Мерланг', 'Мерлуза', 'Мидия', 'Пикша', 'Пинагор',
+              'Поллак', 'Сайда', 'Треска атлантическая', 'Тюрбо', 'Устрица съедобная']
 
 def baits_for_random_fish(result_dict):
     temp_dict = {}
@@ -52,10 +62,29 @@ def baits_for_random_fish(result_dict):
                 temp_dict[i] = temp_dict.get(i, 0) + 1
     return list(islice(dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)).items(), 5))
 
+def baits_for_small_fish(result_dict):
+    temp_dict = {}
+    for k, v in result_dict['Норвежское море'].items():
+        if k in small_fish:
+            for i in v:
+                temp_dict[i] = temp_dict.get(i, 0) + 1
+    return list(islice(dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)).items(), 5))
+
+def baits_for_other(result_dict):
+    temp_dict = {}
+    for k, v in result_dict['Норвежское море'].items():
+        if k in other_fish:
+            for i in v:
+                temp_dict[i] = temp_dict.get(i, 0) + 1
+    return list(islice(dict(sorted(temp_dict.items(), key=lambda x: x[1], reverse=True)).items(), 8))
+
+
 
 if __name__ == "__main__":
-    result_dict = all_parsing()
-    print(*baits_for_random_fish(result_dict))
+    res = load_parsing_results('all_parsing_result.json')
+    print(baits_for_other(res))
+    #result_dict = all_parsing()
+    #print(*baits_for_random_fish(result_dict))
 
 
 
