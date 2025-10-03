@@ -10,7 +10,9 @@ import json
 
 
 def all_parsing() -> dict[str, dict[str, list]]:
-    with webdriver.Chrome() as browser:
+    options = webdriver.ChromeOptions()
+    options.add_argument('--headless')
+    with webdriver.Chrome(options=options) as browser:
         url = 'https://rf4game.ru/records/weekly'
         browser.get(url)
 
