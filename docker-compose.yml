@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  rf4-bot:
+    build: .
+    container_name: rf4-bot
+    ports:
+      - "9000:8000"
+    env_file:
+      - .env

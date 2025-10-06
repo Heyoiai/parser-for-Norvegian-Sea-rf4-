@@ -5,3 +5,4 @@ input.txt
 __pycache__/
 *.pyc
 .idea/
+myenv/
