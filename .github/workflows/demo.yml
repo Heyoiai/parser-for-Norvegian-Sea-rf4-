@@ -50,6 +50,6 @@ jobs:
     
     - name: Test Docker image
       run: |
-        docker run -rm rf4-bot:latest python --version
+        docker run --rm rf4-bot:latest python --version
     
 
