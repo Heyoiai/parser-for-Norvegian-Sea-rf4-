@@ -70,6 +70,6 @@ jobs:
             docker rm rr4-bot || true
 
             docker run -d \
-              -- name rr4-bot \
-              -- restart unless-stopped \
+              --name rr4-bot \
+              --restart unless-stopped \
 
