@@ -4,6 +4,7 @@ on:
     branches: master
   pull_request:
     branches: master
+  workflow_dispatch:
 env:
   REGISTRY: ghvr.io
   IMAGE_NAME: ${{ github.repository }}
