@@ -52,5 +52,24 @@ jobs:
     - name: Test Docker image
       run: |
         docker run --rm rf4-bot:latest python --version
-    
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Deploy Docker container via SSH
+        uses: appleboy/ssh-action@v1.0.3
+
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            docker stop rr4-bot || true
+            docker rm rr4-bot || true
+
+            docker run -d \
+              -- name rr4-bot \
+              -- restart unless-stopped \
 
