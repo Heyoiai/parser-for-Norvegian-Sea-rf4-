@@ -1,3 +1,26 @@
+name: Network Test
+
+on: [workflow_dispatch]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check network connectivity
+        run: |
+          echo "Testing connection to: ${{ secrets.SERVER_HOST }}"
+          ping -c 3 ${{ secrets.SERVER_HOST }} || echo "Ping failed"
+          telnet ${{ secrets.SERVER_HOST }} 22 || echo "Port 22 closed"
+          curl -s ifconfig.me && echo " - GitHub Actions IP"
+
+
+
+
+
+
+
+
+
 #name: Deploy rr4-bot
 
 #on:
